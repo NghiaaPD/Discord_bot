@@ -8,7 +8,7 @@ import calendar as ii
 import openpyxl
 import pandas as pd
 
-token = 'MTA3MjE3OTkwMzEzNjU1MTA0NQ.GI8eih.q9MMTGw70SQpxZj98DWdxq3ZFACoiPYvylWdWU'
+token = ''
 
 b = randint(1, 10)
 n = choice(str(b))
