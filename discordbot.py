@@ -8,12 +8,10 @@ import calendar as ii
 import openpyxl
 import pandas as pd
 
-token = ''
+token = 'MTA3MjE3OTkwMzEzNjU1MTA0NQ.GTRgIw.Kxok30TUWAoxpHhirsJp2GrRV_azzGtT50WNl8'
 
 b = randint(1, 10)
 n = choice(str(b))
-
-
 
 client = commands.Bot(intents=discord.Intents.all(), command_prefix="!", description='Hả ai bik j đâu :))')
 
@@ -27,6 +25,10 @@ if str(moment) == "PM":
 else:
     moment = "sáng"
     
+wb = openpyxl.Workbook()
+sheet = wb.active
+sheet.title = 'User List'
+sheet['A1'] = 'Member Name'
 
 @client.event
 async def on_ready():
@@ -38,11 +40,15 @@ async def on_ready():
             member_list.append([member.name, member.id, member.display_name])
     df = pd.DataFrame(member_list, columns=['Name', 'ID', 'Display Name'])
     df.to_excel("members.xlsx", index=False)
+    print('Bot is ready')
 
+@client.event
+async def on_ready():
+    await client.change_presence(activity=discord.Game(name="Trùm khủng bố Trung Đông"))    
 
 @client.event
 async def cog_check(self, ctx):
-    if ctx.message.author.id == ctx.guild.owner.id and ctx.message.content.startswith('.hi'):
+    if ctx.message.author.id == ctx.guild.owner.id and ctx.message.content.startswith('/hi'):
         await ctx.channel.send('hi')
 
 @client.event
@@ -52,7 +58,10 @@ async def on_message(message):
     channel = message.channel
     i = 1
     print('{}: {}'.format(author, content))
-
+    if message.content.startswith('/attendance'):
+        sheet.append([author.name])
+        wb.save('UserList.xlsx')
+        await channel.send('{} đã được thêm vào danh sách điểm danh'.format(author.name))
     if message.content.startswith('.ctf'):
         await channel.send('https://ctf.fptufia.me/')
     if message.content.startswith('muốn làm chủ nghiệm ko'):
@@ -87,5 +96,7 @@ async def on_message_delete(message):
     content = message.content
     channel = message.channel
     await channel.send('{}: đã xóa tin nhắn: {}'.format(author, content))
+
+    
 
 client.run(token)
